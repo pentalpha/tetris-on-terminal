@@ -7,5 +7,5 @@
 #define GAME_WIDTH       16
 #define GAME_HEIGHT      24
 #define GAME_REAL_HEIGHT 20
-#define TICKS_PER_SEC    40 // 40 FPS.
+#define TICKS_PER_SEC    15 // 40 FPS.
 #endif

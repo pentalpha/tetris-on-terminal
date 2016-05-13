@@ -54,7 +54,6 @@ void BeagleController::moveWatcher(){
   old_potenciometer = potenciometer = getNormalizedPort(POTENCIOMETER_PORT);
   while(keepUpdating)
   {
-    //std::this_thread::sleep_for(std::chrono::milliseconds{500});
     float p = getNormalizedPort(POTENCIOMETER_PORT);
     potenciometer = p;
     if((potenciometer - old_potenciometer) > POTENCIOMETER_TOLERANCE){
@@ -68,7 +67,6 @@ void BeagleController::moveWatcher(){
       *v = BeagleController::right;
       cmds.push(v);
     }else{
-      //cout << potenciometer << endl;
     }
   }
 }
@@ -76,39 +74,34 @@ void BeagleController::moveWatcher(){
 void BeagleController::lightWatcher(){
   float old_lightFactor;
   float lightFactor;
+  bool shadowed = false;
   old_lightFactor = lightFactor = getNormalizedPort(LIGHT_PORT);
   while(keepUpdating)
   {
-    //std::this_thread::sleep_for(std::chrono::milliseconds{300});
-    float p = getNormalizedPort(LIGHT_PORT);
-    lightFactor = p;
-    float diff = lightFactor - old_lightFactor;
-    if(diff >= LIGHT_TOLERANCE){
-      old_lightFactor = lightFactor;
-      int* v = new int;
-      *v = BeagleController::shadow;
-      cmds.push(v);
-    }else if(-diff >= LIGHT_TOLERANCE){
-      old_lightFactor = lightFactor;
-      cout << "[back to normal light state]" << endl;
-    }
-
-    /*if(lightFactor > old_lightFactor + LIGHT_TOLERANCE){
-      old_lightFactor = lightFactor;
-      int* v = new int;
-      *v = BeagleController::shadow;
-      cmds.push(v);
+    lightFactor = getNormalizedPort(LIGHT_PORT);
+    if(shadowed == false){
+      if(lightFactor - old_lightFactor >= LIGHT_TOLERANCE){
+        old_lightFactor = lightFactor;
+        int* v = new int;
+        *v = BeagleController::shadow;
+        cmds.push(v);
+        shadowed = true;
+      }
     }else{
-      //cout << lightFactor << endl;
-    }*/
+      if(old_lightFactor - lightFactor >= LIGHT_TOLERANCE){
+        old_lightFactor = lightFactor;
+        shadowed = false;
+      }
+    }
   }
 }
 
 void BeagleController::buttonWatcher(){
   bool old_buttonValue;
   bool buttonValue;
-  buttonValue = old_buttonValue = false; /*getGpioValue(BUTTON_GPIO);
+  buttonValue = old_buttonValue = getGpioValue(BUTTON_GPIO);
   while(keepUpdating){
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     bool p = getGpioValue(BUTTON_GPIO);
     if(old_buttonValue == false && p == true){
       int* v = new int;
@@ -117,25 +110,11 @@ void BeagleController::buttonWatcher(){
     }
     old_buttonValue = buttonValue;
     buttonValue = p;
-  }*/
+  }
 }
 
 int BeagleController::getCommand(){
-  //if(_instance == NULL){
-  //  _instance = new BeagleController();
-  //}
 
-  /*if(getRotateControl()){
-    return BeagleController::button;
-  }else if (getMoveLeftControl()){
-    return BeagleController::left;
-  }else if (getMoveRightControl()){
-    return BeagleController::right;
-  }else if (getLightFactorControl()){
-    return BeagleController::shadow;
-  }else{
-    return BeagleController::no_command;
-  }*/
   int* cmd = cmds.pop();
   if(cmd != NULL){
     return *cmd;

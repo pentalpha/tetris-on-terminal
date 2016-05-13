@@ -4,9 +4,10 @@
 #include <map>
 #include <stdio.h>
 #include <algorithm>
-#include "./game.h"
-#include "./terminal.h"
-#include "./stdstyle.h"
+#include "game.h"
+#include "terminal.h"
+#include "stdstyle.h"
+#include "beagleController/beagleController.h"
 
 using std::map;
 using std::string;
@@ -121,7 +122,7 @@ void input_manager::process_input()
 	while (true)
 	{
 		ch = getch();
-		bgCmd = 0
+		bgCmd = 0;
 		bgCmd = BeagleController::getCommand();
 		if (ch != ERR){
 			if (ch == 'q' or ch == 'Q')
