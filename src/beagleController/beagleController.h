@@ -12,6 +12,8 @@
 #define PANIC_BUTTON_GPIO 47;
 
 int potenciometer_value;
+bool buttonValue;
+float lightFactor;
 
 bool getRotateControl();
 bool getMoveLeftControl();

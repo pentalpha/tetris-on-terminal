@@ -1,5 +1,7 @@
 #include "beagleController.h"
 
+bool keepUpdating;
+
 int readAnalog(int number){
    stringstream ss;
    ss << PATH_ADC << number << "_raw";
@@ -18,5 +20,14 @@ bool getMoveLeftControl();
 bool getMoveRightControl();
 float getLightFactorControl();
 
-void startValuesUpdater();
-void valuesUpdater();
+void startValuesUpdater(){
+  keepUpdating = true;
+}
+void stopValuesUpdater(){
+  keepUpdating = false;
+}
+void valuesUpdater(){
+  while(keepUpdating){
+    
+  }
+}
