@@ -33,7 +33,7 @@ void game::update_game()
 {
 	if (!is_running())
 		return;
-	
+
 	// check for lines we can destroy.
 	// score is calculated by this system:
 	//
@@ -41,7 +41,7 @@ void game::update_game()
 	// score += 2 ^ (N - 1) * (num_diffrent_chars_in_this_row) * figure_modifier.
 	// figure_modifier grows like logarithm from count of figures.
 	//
-	
+
 	rainbow_feat.update();
 	cur_figure_mgr.update();
 }
@@ -84,14 +84,14 @@ void game::update_score()
 				for (char_data& c: game_field[0])
 					c = char_data::space();
 			}
-			
+
 			if (i == 0)
 				break;
 			i--;
 		}
 		if (n_multiplier != 0)
 			user_score += (1 << (n_multiplier - 1)) * delta_score * cur_figure_mgr.get_figure_modifier();
-		
+
 		//vector<vector<bool>> dfs_map;
 	}
 }
@@ -115,33 +115,47 @@ void game::process_input()
 void input_manager::process_input()
 {
 	int ch;
+	int bgCmd = 0;
 	while (true)
 	{
 		ch = getch();
-		if (ch == ERR)
-			break; // no input yet.
-		if (ch == 'q' or ch == 'Q')
-			the_game->set_stopped();
-		if (ch == ' ')
-		{
-			if (the_game->is_running())
-				the_game->set_paused();
-			else if (the_game->is_paused())
-				the_game->set_running();
-			continue;
+		bgCmd = 0
+		bgCmd = BeagleController::getCommand();
+		if (ch != ERR){
+			if (ch == 'q' or ch == 'Q')
+				the_game->set_stopped();
+			if (ch == ' ')
+			{
+				if (the_game->is_running())
+					the_game->set_paused();
+				else if (the_game->is_paused())
+					the_game->set_running();
+				continue;
+			}
+			if (!the_game->is_running())
+				continue;
+			if (ch == '\n')
+				force_fall = true;
+			if (ch == KEY_LEFT || ch == 'a' || ch == 'A')
+				move_horizontal += -1;
+			if (ch == KEY_RIGHT || ch == 'd' || ch == 'D')
+				move_horizontal += +1;
+			if (ch == KEY_DOWN || ch == 's' || ch == 'S')
+				move_rotational += -1;
+			if (ch == KEY_UP || ch == 'w' || ch == 'W')
+				move_rotational += +1;
+		}else if(bgCmd != BeagleController::no_command){
+			if(bgCmd == BeagleController::shadow)
+				force_fall = true;
+			if (bgCmd == BeagleController::left)
+				move_horizontal += -1;
+			if (bgCmd == BeagleController::right)
+				move_horizontal += +1;
+			if (bgCmd == BeagleController::button)
+				move_rotational += -1;
+		}else{
+			break;
 		}
-		if (!the_game->is_running())
-			continue;
-		if (ch == '\n')
-			force_fall = true;
-		if (ch == KEY_LEFT || ch == 'a' || ch == 'A')
-			move_horizontal += -1;
-		if (ch == KEY_RIGHT || ch == 'd' || ch == 'D')
-			move_horizontal += +1;
-		if (ch == KEY_DOWN || ch == 's' || ch == 'S')
-			move_rotational += -1;
-		if (ch == KEY_UP || ch == 'w' || ch == 'W')
-			move_rotational += +1;
 	}
 }
 
@@ -160,7 +174,7 @@ void game::render()
 	std::string statuses[4] = {"RUNNING", "PAUSED", "STOPPED", "DEAD"};
 	terminal_put_string("Your score: " + score_string + ", multiplier: " + multipl_string + " [" + statuses[state] + "]"
 		+ "\n", is_dead() ? color_t::red : color_t::white);
-	
+
 	// render here
 	map<uint32_t, uint32_t> the_map;
 	color_t cur_fig_color = color_t::white;
@@ -181,7 +195,7 @@ void game::render()
 			terminal_put_char('#', is_dead() ? color_t::red : color_t::white);
 		else
 			terminal_put_char(' ');
-		
+
 		for (uint32_t j = 0; j != GAME_WIDTH; j++)
 		{
 			if (gm_settings.ticks_per_rainbow == UINT32_MAX and game_field[i][j].character == ' ' and the_map.find(j) != the_map.end() and the_map[j] < i)
@@ -194,7 +208,7 @@ void game::render()
 				terminal_put_char(e.character, e.color);
 			}
 		}
-		
+
 		if (i >= GAME_HEIGHT - GAME_REAL_HEIGHT)
 			terminal_put_string("#\n", is_dead() ? color_t::red : color_t::white);
 		else
@@ -240,7 +254,7 @@ void cur_figure_manager::update()
 		the_game->input_mgr.move_rotational = 0;
 		the_game->input_mgr.force_fall = false;
 	}
-	else 
+	else
 	{
 		if (the_game->input_mgr.move_horizontal != 0)
 		{
@@ -257,7 +271,7 @@ void cur_figure_manager::update()
 			cur_figure.rotate_fwd(the_game->game_field);
 			the_game->input_mgr.move_rotational--;
 		}
-		
+
 		if (is_freeze()) // FREEZE.
 		{
 			if (ticks != 0)
@@ -276,7 +290,7 @@ void cur_figure_manager::update()
 					while (cur_figure.move_y_or_collide(the_game->game_field) == true){}
 					set_wait_spwn();
 				}
-				
+
 				else if (cur_figure.move_y_or_collide(the_game->game_field) == false) // collided.
 					set_wait_spwn();
 				else
@@ -296,39 +310,39 @@ rainbow_feature::rainbow_feature(game* the_game): the_game(the_game)
 	if (settings.ticks_per_invert_rand_fact != 0)
 		ticks_per_invert += rand() % settings.ticks_per_invert_rand_fact;
 	in_invert = false;
-	
+
 	blackout = char_data{get_random_possible_char(), get_random_possible_color()};
-	
+
 	for (color_t col: get_all_possible_colors())
 		for (char c: get_all_possible_chars())
 		{
 			possible_symbols.push_back(char_data{c, col});
 			the_mapping[char_data{c, col}] = char_data{c, col};
 		}
-	
+
 }
 
 void rainbow_feature::update()
 {
 	auto settings = the_game->get_game_settings();
-	
+
 	if (ticks_per_rainbow == 0)
 	{
 		if (in_invert)
 			blackout = char_data{get_random_possible_char(), get_random_possible_color()};
-		
+
 		std::random_shuffle(possible_symbols.begin(), possible_symbols.end());
 		{
 			auto it = the_mapping.begin();
 			for (uint32_t i = 0; i != possible_symbols.size(); ++i, ++it)
 				it->second = possible_symbols[i];
 		}
-		
+
 		ticks_per_rainbow = settings.ticks_per_rainbow + rand() % settings.ticks_per_rainbow_rand_fact;
 	}
 	else
 		ticks_per_rainbow--;
-	
+
 	if (ticks_per_invert == 0)
 	{
 		in_invert = !in_invert;

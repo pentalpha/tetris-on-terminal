@@ -1,8 +1,14 @@
 #include "beagleController.h"
 
-bool keepUpdating;
+BeagleController::BeagleController(){
+  startValuesUpdater();
+}
 
-int readAnalog(int number){
+BeagleController::~BeagleController(){
+  stopValuesUpdater();
+}
+
+int BeagleController::readAnalog(int number){
    stringstream ss;
    ss << PATH_ADC << number << "_raw";
    fstream fs;
@@ -12,22 +18,41 @@ int readAnalog(int number){
    return number;
 }
 
-bool getRotateControl(){
-  return getGpioValue(PANIC_BUTTON_GPIO);
-}
+bool BeagleController::getRotateControl();
+bool BeagleController::getMoveLeftControl();
+bool BeagleController::getMoveRightControl();
+bool BeagleController::getLightFactorControl();
 
-bool getMoveLeftControl();
-bool getMoveRightControl();
-float getLightFactorControl();
-
-void startValuesUpdater(){
+void BeagleController::startValuesUpdater(){
   keepUpdating = true;
+  //TODO
 }
-void stopValuesUpdater(){
+void BeagleController::stopValuesUpdater(){
   keepUpdating = false;
 }
-void valuesUpdater(){
-  while(keepUpdating){
-    
+
+void BeagleController::valuesUpdater(){
+  while(keepUpdating)
+  {
+    //TODO
+    //std::this_thread::sleep_for(std::chrono::milliseconds{100});
+  }
+}
+
+int BeagleController::getCommand(){
+  if(_instance == NULL){
+    _instance = new BeagleController();
+  }
+
+  if(_instance.getRotateControl()){
+    return BeagleController::button;
+  }else if (_instance.getMoveLeftControl()){
+    return BeagleController::left;
+  }else if (_instance.getMoveRightControl()){
+    return BeagleController::right;
+  }else if (_instance.getLightFactorControl()){
+    return BeagleController::shadow;
+  }else{
+    return BeagleController::no_command;
   }
 }
