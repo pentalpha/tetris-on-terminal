@@ -25,7 +25,8 @@ bool BeagleController::getLightFactorControl();
 
 void BeagleController::startValuesUpdater(){
   keepUpdating = true;
-  //TODO
+  thread t = thread(&BeagleController::valuesUpdater, this);
+  t.detach();
 }
 void BeagleController::stopValuesUpdater(){
   keepUpdating = false;
