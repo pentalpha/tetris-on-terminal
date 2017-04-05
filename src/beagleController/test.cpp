@@ -5,8 +5,9 @@ using namespace std;
 
 int main(int argc, char const *argv[]) {
   int bgCmd = 0;
+  BeagleController controller;
   do{
-    bgCmd = BeagleController::getCommand();
+    bgCmd = controller.getCommand();
     if(bgCmd != BeagleController::no_command){
 			if(bgCmd == BeagleController::shadow)
 				cout << "Force fall\n";

@@ -1,5 +1,5 @@
 #include "beagleController.h"
-
+using namespace std;
 BeagleController::BeagleController(){
   startValuesUpdater();
 }
@@ -18,8 +18,8 @@ int BeagleController::readAnalog(int number){
    return number;
 }
 
-bool BeagleController::getRotateControl();
-bool BeagleController::getLightFactorControl();
+bool BeagleController::getRotateControl(){ return false;}
+bool BeagleController::getLightFactorControl(){return false;}
 
 bool BeagleController::getMoveLeftControl(){
 	return old_potenciometer < potenciometer;
@@ -49,17 +49,17 @@ void BeagleController::valuesUpdater(){
 }
 
 int BeagleController::getCommand(){
-  if(_instance == NULL){
-    _instance = new BeagleController();
-  }
+  //if(_instance == NULL){
+  //  _instance = new BeagleController();
+  //}
 
-  if(_instance.getRotateControl()){
+  if(getRotateControl()){
     return BeagleController::button;
-  }else if (_instance.getMoveLeftControl()){
+  }else if (getMoveLeftControl()){
     return BeagleController::left;
-  }else if (_instance.getMoveRightControl()){
+  }else if (getMoveRightControl()){
     return BeagleController::right;
-  }else if (_instance.getLightFactorControl()){
+  }else if (getLightFactorControl()){
     return BeagleController::shadow;
   }else{
     return BeagleController::no_command;

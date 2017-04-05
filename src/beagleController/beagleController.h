@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <thread>
+#include <sstream>
+#include <fstream> 
 
 #define MAX_POTENCIOMETER 4095
 #define MAX_LDR 4095
@@ -22,17 +24,17 @@ public:
   ~BeagleController();
 
   //returns the current command
-  static int getCommand();
+  int getCommand();
   //Values to interpret the return of getCommand():
-  static int no_command = 0;
+  const static int no_command = 0;
   //A movement to the right
-  static int right = 1;
+  const static int right = 1;
   //A movement to the left
-  static int left = 2;
+  const static int left = 2;
   //The light on the LDR decreased
-  static int shadow = 3;
+  const static int shadow = 3;
   //The button has been pressed
-  static int button = 4;
+  const static int button = 4;
 
 private:
   //flag to continue the updating of the values
@@ -48,7 +50,7 @@ private:
   bool buttonValue;
 
   //static instance of the controller to be used by getCommand
-  static BeagleController* _instance = NULL;
+  //static BeagleController* _instance;
 
   //true if the current values in...
   // ...old_button and button mean that the user pressed them
