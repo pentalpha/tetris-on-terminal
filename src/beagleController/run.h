@@ -21,6 +21,9 @@ void runWhileSilent(vector<string> commands):
 #include <set>
 #include <signal.h>
 #include <vector>
+#include <thread>
+#include <pthread.h>
+#include <cstring>
 
 using namespace std;
 
@@ -33,5 +36,7 @@ void runWhileSilent(vector<string> commands);
 string run(string command);
 
 string run(const char* command);
+
+void setScheduling(std::thread &th, int policy, int priority);
 
 #endif

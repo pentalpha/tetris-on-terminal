@@ -19,8 +19,6 @@ int BeagleController::readAnalog(int number){
 }
 
 bool BeagleController::getRotateControl();
-bool BeagleController::getMoveLeftControl();
-bool BeagleController::getMoveRightControl();
 bool BeagleController::getLightFactorControl();
 
 bool BeagleController::getMoveLeftControl(){
