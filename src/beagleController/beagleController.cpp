@@ -45,6 +45,8 @@ void BeagleController::valuesUpdater(){
   {
     //TODO
     //std::this_thread::sleep_for(std::chrono::milliseconds{100});
+    old_potenciometer = potenciometer;
+    potenciometer = readAnalog(POTENCIOMETER_PORT);
   }
 }
 
