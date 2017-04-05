@@ -4,7 +4,8 @@
 #include <iostream>
 #include <thread>
 #include <sstream>
-#include <fstream> 
+#include <fstream>
+#include "Queue.h"
 
 #define MAX_POTENCIOMETER 4095
 #define MAX_LDR 4095
@@ -36,6 +37,9 @@ public:
   //The button has been pressed
   const static int button = 4;
 
+  //reads an analog port
+  static int readAnalog(int number);
+
 private:
   //flag to continue the updating of the values
   bool keepUpdating;
@@ -49,24 +53,10 @@ private:
   bool old_buttonValue;
   bool buttonValue;
 
+  Queue cmds;
+
   //static instance of the controller to be used by getCommand
   //static BeagleController* _instance;
-
-  //true if the current values in...
-  // ...old_button and button mean that the user pressed them
-  bool getRotateControl();
-  //...old_potenciometer and potenciometer mean that the user
-  //turned the potenciometer to the left
-  bool getMoveLeftControl();
-  //...old_potenciometer and potenciometer mean that the user
-  //turned the potenciometer to the right
-  bool getMoveRightControl();
-  //...old_lightFactor and lightFactor mean that the LDR sensor
-  //was in the light, but now is under a shadow
-  bool getLightFactorControl();
-
-  //reads an analog port
-  static int readAnalog(int number);
 
   //starts to update the values
   void startValuesUpdater();
