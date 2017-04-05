@@ -1,12 +1,24 @@
 #include "beagleController.h"
 #include <iostream>
 using namespace std;
-BeagleController::BeagleController(){
-  startValuesUpdater();
+
+bool BeagleController::keepUpdating;
+Queue BeagleController::cmds;
+
+/*BeagleController::BeagleController(){
+  startWatchers();
 }
 
 BeagleController::~BeagleController(){
-  stopValuesUpdater();
+  stopWatchers();
+}*/
+
+void BeagleController::init(){
+  startWatchers();
+}
+
+void BeagleController::end(){
+  stopWatchers();
 }
 
 int BeagleController::readAnalog(int number){
@@ -19,21 +31,31 @@ int BeagleController::readAnalog(int number){
    return number;
 }
 
-void BeagleController::startValuesUpdater(){
-  old_potenciometer = potenciometer = readAnalog(POTENCIOMETER_PORT) / (float)MAX_POTENCIOMETER;
-  keepUpdating = true;
-  thread t = thread(&BeagleController::valuesUpdater, this);
-  t.detach();
+float BeagleController::getNormalizedPort(int port){
+  return ((float)readAnalog(port) / (float)MAX_POTENCIOMETER);
 }
-void BeagleController::stopValuesUpdater(){
+
+void BeagleController::startWatchers(){
+  keepUpdating = true;
+  thread t1 = thread(BeagleController::moveWatcher);
+  t1.detach();
+  thread t2 = thread(BeagleController::lightWatcher);
+  t2.detach();
+  thread t3 = thread(BeagleController::buttonWatcher);
+  t3.detach();
+}
+void BeagleController::stopWatchers(){
   keepUpdating = false;
 }
 
-void BeagleController::valuesUpdater(){
+void BeagleController::moveWatcher(){
+  float old_potenciometer;
+  float potenciometer;
+  old_potenciometer = potenciometer = getNormalizedPort(POTENCIOMETER_PORT);
   while(keepUpdating)
   {
-    std::this_thread::sleep_for(std::chrono::milliseconds{500});
-    float p = readAnalog(POTENCIOMETER_PORT) / (float)MAX_POTENCIOMETER;
+    //std::this_thread::sleep_for(std::chrono::milliseconds{500});
+    float p = getNormalizedPort(POTENCIOMETER_PORT);
     potenciometer = p;
     if((potenciometer - old_potenciometer) > POTENCIOMETER_TOLERANCE){
       old_potenciometer = potenciometer;
@@ -48,6 +70,34 @@ void BeagleController::valuesUpdater(){
     }else{
       cout << potenciometer << endl;
     }
+  }
+}
+
+void BeagleController::lightWatcher(){
+  float old_lightFactor;
+  float lightFactor;
+  old_lightFactor = lightFactor = getNormalizedPort(LIGHT_PORT);
+  while(keepUpdating)
+  {
+    //std::this_thread::sleep_for(std::chrono::milliseconds{500});
+    float p = getNormalizedPort(LIGHT_PORT);
+    lightFactor = p;
+    if(old_lightFactor > lightFactor + LIGHT_TOLERANCE){
+      old_lightFactor = lightFactor;
+      int* v = new int;
+      *v = BeagleController::shadow;
+      cmds.push(v);
+    }else{
+      cout << lightFactor << endl;
+    }
+  }
+}
+
+void BeagleController::buttonWatcher(){
+  bool old_buttonValue;
+  bool buttonValue;
+  while(keepUpdating){
+
   }
 }
 

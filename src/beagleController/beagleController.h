@@ -6,6 +6,7 @@
 #include <sstream>
 #include <fstream>
 #include "Queue.h"
+#include "gpio.h"
 
 #define MAX_POTENCIOMETER 4095
 #define MAX_LDR 4095
@@ -21,11 +22,11 @@
 
 class BeagleController{
 public:
-  BeagleController();
-  ~BeagleController();
+  //BeagleController();
+  //~BeagleController();
 
   //returns the current command
-  int getCommand();
+  static int getCommand();
   //Values to interpret the return of getCommand():
   const static int no_command = 0;
   //A movement to the right
@@ -39,30 +40,25 @@ public:
 
   //reads an analog port
   static int readAnalog(int number);
-
-private:
-  //flag to continue the updating of the values
-  bool keepUpdating;
-
-  //The range of the following values is 0.0 <= x <= 1.0 (percentage)
-  float old_potenciometer;
-  float potenciometer;
-  float old_lightFactor;
-  float lightFactor;
-  //
-  bool old_buttonValue;
-  bool buttonValue;
-
-  Queue cmds;
-
-  //static instance of the controller to be used by getCommand
+  static void init();
+  static void end();
+  static float getNormalizedPort(int port);
   //static BeagleController* _instance;
 
+private:
+
+  //flag to continue the updating of the values
+  static bool keepUpdating;
+
+  static Queue cmds;
+
   //starts to update the values
-  void startValuesUpdater();
+  static void startWatchers();
   //callback to update the values
-  void valuesUpdater();
-  void stopValuesUpdater();
+  static void moveWatcher();
+  static void lightWatcher();
+  static void buttonWatcher();
+  static void stopWatchers();
 };
 
 #endif

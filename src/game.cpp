@@ -21,11 +21,13 @@ game::game(game_settings gm_settings): gm_settings(gm_settings), input_mgr(this)
 		line.resize(GAME_WIDTH);
 		std::fill(line.begin(), line.end(), char_data::space());
 	}
+	BeagleController::init();
 	state = 0; // running.
 }
 
 game::~game()
 {
+	BeagleController::end();
 }
 
 

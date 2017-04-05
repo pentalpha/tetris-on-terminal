@@ -4,10 +4,11 @@
 using namespace std;
 
 int main(int argc, char const *argv[]) {
+  BeagleController::init();
   int bgCmd = 0;
   BeagleController controller;
   do{
-    bgCmd = controller.getCommand();
+    bgCmd = BeagleController::getCommand();
     if(bgCmd != BeagleController::no_command){
       if(bgCmd == BeagleController::shadow)
               cout << "Force fall\n";
@@ -18,7 +19,7 @@ int main(int argc, char const *argv[]) {
       if (bgCmd == BeagleController::button)
               cout << "Rotate\n";
     }
-    //cout << BeagleController::readAnalog(1) << endl;
   }while(true);
+  BeagleController::end();
   return 0;
 }
