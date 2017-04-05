@@ -23,6 +23,14 @@ bool BeagleController::getMoveLeftControl();
 bool BeagleController::getMoveRightControl();
 bool BeagleController::getLightFactorControl();
 
+bool BeagleController::getMoveLeftControl(){
+	return old_potenciometer < potenciometer;
+}
+
+bool BeagleController::getMoveRightControl(){
+	return old_potenciometer < potenciometer;
+}
+
 void BeagleController::startValuesUpdater(){
   keepUpdating = true;
   thread t = thread(&BeagleController::valuesUpdater, this);
