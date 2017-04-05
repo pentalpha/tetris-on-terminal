@@ -28,7 +28,7 @@ bool BeagleController::getMoveLeftControl(){
 }
 
 bool BeagleController::getMoveRightControl(){
-	return old_potenciometer < potenciometer;
+	return old_potenciometer > potenciometer;
 }
 
 void BeagleController::startValuesUpdater(){
