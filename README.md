@@ -19,7 +19,7 @@ To get the tetris-on-terminal you need this dependencies:
 
 ### Step 2: compile.
 ```sh
-    $ ./build.sh REL   # use DBG if you want to get dev binary.
+    $ make
 ```
 
 ### Step 3: run.
