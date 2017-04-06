@@ -1,4 +1,4 @@
-#include "./stdstyle.h"
+#include "../stdstyle.h"
 #include "./char_data.h"
 
 

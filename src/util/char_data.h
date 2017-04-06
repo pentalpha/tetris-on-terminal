@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <string>
-#include "./stdstyle.h"
+#include "../stdstyle.h"
 
 enum color_t
 {
@@ -20,12 +20,12 @@ struct char_data
 {
 	char character;
 	color_t color;
-	
+
 	bool operator<(const char_data other) const
 	{
 		return (character < other.character) or (character == other.character and color < other.color);
 	}
-	
+
 	static char_data space()
 	{
 		char_data c = {' ', color_t::white};
