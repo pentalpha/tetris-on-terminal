@@ -68,7 +68,7 @@ void BeagleController::moveWatcher(){
       *v = BeagleController::right;
       cmds.push(v);
     }else{
-      cout << potenciometer << endl;
+      //cout << potenciometer << endl;
     }
   }
 }
@@ -79,26 +79,45 @@ void BeagleController::lightWatcher(){
   old_lightFactor = lightFactor = getNormalizedPort(LIGHT_PORT);
   while(keepUpdating)
   {
-    //std::this_thread::sleep_for(std::chrono::milliseconds{500});
+    //std::this_thread::sleep_for(std::chrono::milliseconds{300});
     float p = getNormalizedPort(LIGHT_PORT);
     lightFactor = p;
-    if(old_lightFactor > lightFactor + LIGHT_TOLERANCE){
+    float diff = lightFactor - old_lightFactor;
+    if(diff >= LIGHT_TOLERANCE){
+      old_lightFactor = lightFactor;
+      int* v = new int;
+      *v = BeagleController::shadow;
+      cmds.push(v);
+    }else if(-diff >= LIGHT_TOLERANCE){
+      old_lightFactor = lightFactor;
+      cout << "[back to normal light state]" << endl;
+    }
+
+    /*if(lightFactor > old_lightFactor + LIGHT_TOLERANCE){
       old_lightFactor = lightFactor;
       int* v = new int;
       *v = BeagleController::shadow;
       cmds.push(v);
     }else{
-      cout << lightFactor << endl;
-    }
+      //cout << lightFactor << endl;
+    }*/
   }
 }
 
 void BeagleController::buttonWatcher(){
   bool old_buttonValue;
   bool buttonValue;
+  buttonValue = old_buttonValue = false; /*getGpioValue(BUTTON_GPIO);
   while(keepUpdating){
-
-  }
+    bool p = getGpioValue(BUTTON_GPIO);
+    if(old_buttonValue == false && p == true){
+      int* v = new int;
+      *v = BeagleController::button;
+      cmds.push(v);
+    }
+    old_buttonValue = buttonValue;
+    buttonValue = p;
+  }*/
 }
 
 int BeagleController::getCommand(){

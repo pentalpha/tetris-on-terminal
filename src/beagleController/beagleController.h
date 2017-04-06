@@ -15,10 +15,10 @@
 #define POTENCIOMETER_PORT 1
 #define LIGHT_PORT 3
 //The GPIO id of the button
-#define BUTTON_GPIO 47;
+#define BUTTON_GPIO 115;
 //A value smaller than the tolerance will be ignored
-#define POTENCIOMETER_TOLERANCE 0.01
-#define LIGHT_TOLERANCE 0.1
+#define POTENCIOMETER_TOLERANCE 0.03
+#define LIGHT_TOLERANCE 0.2
 
 class BeagleController{
 public:
