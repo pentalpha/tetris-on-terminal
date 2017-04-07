@@ -99,8 +99,9 @@ void BeagleController::lightWatcher(){
 void BeagleController::buttonWatcher(){
   bool old_buttonValue;
   bool buttonValue;
-  buttonValue = old_buttonValue = false; /*getGpioValue(BUTTON_GPIO);
+  buttonValue = old_buttonValue = getGpioValue(BUTTON_GPIO);
   while(keepUpdating){
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
     bool p = getGpioValue(BUTTON_GPIO);
     if(old_buttonValue == false && p == true){
       int* v = new int;
@@ -109,7 +110,7 @@ void BeagleController::buttonWatcher(){
     }
     old_buttonValue = buttonValue;
     buttonValue = p;
-  }*/
+  }
 }
 
 int BeagleController::getCommand(){

@@ -15,7 +15,7 @@
 #define POTENCIOMETER_PORT 1
 #define LIGHT_PORT 3
 //The GPIO id of the button
-#define BUTTON_GPIO 115;
+#define BUTTON_GPIO 115
 //A value smaller than the tolerance will be ignored
 #define POTENCIOMETER_TOLERANCE 0.02
 #define LIGHT_TOLERANCE 0.1
