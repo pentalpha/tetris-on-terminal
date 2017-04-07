@@ -6,13 +6,13 @@
 
 #### ADC:
 
-- A potenciometer in /sys/bus/iio/devices/iio:device0/in_voltage1_raw
+- A potenciometer in /sys/bus/iio/devices/iio:device0/in_voltage1_raw. Moves the current piece to the left and to the right.
 
-- A LDR sendor in /sys/bus/iio/devices/iio:device0/in_voltage3_raw
+- A LDR sendor in /sys/bus/iio/devices/iio:device0/in_voltage3_raw. Decreasing the light over the sensor (with the user's hand, for example) will force the current piece to fall to the bottom.
 
 #### GPIO:
 
-- An input button in /sys/class/gpio/gpio115;
+- An input button in /sys/class/gpio/gpio115. Pressing the button rotates the piece.
 
 ### The full circuit on the protoboard:
 
