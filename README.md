@@ -14,7 +14,7 @@
 
 - An input button in /sys/class/gpio/gpio115;
 
-### The full circuit on a proto-board:
+### The full circuit on the protoboard:
 
 ![Controller on Beaglebone Black](./image2.jpg)
 
